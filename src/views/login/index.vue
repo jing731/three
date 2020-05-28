@@ -31,12 +31,13 @@
     <!-- 输入框end -->
     <!-- 按钮 -->
     <div class="app-btn">
-      <van-button type="info" class="app-send"  block>登录</van-button>
+      <van-button type="info" class="app-send" @click="Onlogin" block>登录</van-button>
     </div>
     <!-- 按钮end -->
   </div>
 </template>
 <script>
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -54,6 +55,21 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    async  Onlogin () {
+      this.$toast.loading({
+        message: '登录中...',
+        forbidClick: true,
+        duration: 0
+      })
+      try {
+        const res = await login(this.user)
+        console.log(res)
+        this.$toast.success('登录成功')
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('登录失败，手机号或验证码错误')
+      }
+    }
   }
 }
 </script>
