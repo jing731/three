@@ -9,12 +9,13 @@
     />
     <!-- 导航栏end -->
     <!-- 输入框 -->
-    <van-cell-group>
+    <van-form @submit="Onlogin">
   <van-field
     v-model="user.mobile"
     icon-prefix='icon'
     left-icon="shouji"
     placeholder="请输入手机号"
+    :rules="formRules.mobile"
   />
   <van-field
     v-model="user.code"
@@ -22,18 +23,19 @@
     icon-prefix='icon'
     left-icon="yanzhengma"
     placeholder="请输入验证码"
+    :rules="formRules.code"
   >
    <template #button>
     <van-button size="small" class="send" round>发送验证码</van-button>
    </template>
   </van-field>
-   </van-cell-group>
-    <!-- 输入框end -->
-    <!-- 按钮 -->
+  <!-- 按钮 -->
     <div class="app-btn">
       <van-button type="info" class="app-send" @click="Onlogin" block>登录</van-button>
     </div>
     <!-- 按钮end -->
+   </van-form>
+    <!-- 输入框end -->
   </div>
 </template>
 <script>
@@ -47,6 +49,16 @@ export default {
       user: {
         mobile: '',
         code: ''
+      },
+      formRules: {
+        mobile: [
+          { required: true, message: '请输入手机号' },
+          { pattern: /^1[3|5|7|9]\d{9}$/, message: '手机号格式错误' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码' },
+          { pattern: /\d{6}/, message: '验证码格式错误' }
+        ]
       }
     }
   },
