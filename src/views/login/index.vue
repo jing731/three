@@ -9,7 +9,11 @@
     />
     <!-- 导航栏end -->
     <!-- 输入框 -->
-    <van-form @submit="Onlogin">
+    <van-form
+    :show-error-message='false'
+    :show-error='false'
+    @submit="Onlogin"
+    @failed="Onfailed">
   <van-field
     v-model="user.mobile"
     icon-prefix='icon'
@@ -31,7 +35,7 @@
   </van-field>
   <!-- 按钮 -->
     <div class="app-btn">
-      <van-button type="info" class="app-send" @click="Onlogin" block>登录</van-button>
+      <van-button type="info" class="app-send" block>登录</van-button>
     </div>
     <!-- 按钮end -->
    </van-form>
@@ -80,6 +84,15 @@ export default {
       } catch (err) {
         console.log(err)
         this.$toast.fail('登录失败，手机号或验证码错误')
+      }
+    },
+    Onfailed (err) {
+      console.log(err)
+      if (err.errors[0]) {
+        this.$toast({
+          message: err.errors[0].message,
+          position: top
+        })
       }
     }
   }
