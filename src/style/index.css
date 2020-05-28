@@ -75,3 +75,12 @@
 .icon-yuedu:before {
   content: "\e61a";
 }
+.app-nav-warp {
+  background: #3296fa !important;
+}
+.app-nav-warp .van-nav-bar__title {
+  color: #ffffff;
+}
+.app-nav-warp .van-icon {
+  color: #ffffff !important;
+}
