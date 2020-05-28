@@ -5,6 +5,7 @@
     class="app-nav-warp"
     title="注册/登录"
     left-arrow
+    ref="login-form"
     @click-left="$router.back()"
     />
     <!-- 导航栏end -->
@@ -18,6 +19,7 @@
     v-model="user.mobile"
     icon-prefix='icon'
     left-icon="shouji"
+    name='mobile'
     placeholder="请输入手机号"
     :rules="formRules.mobile"
   />
@@ -25,12 +27,16 @@
     v-model="user.code"
     clearable
     icon-prefix='icon'
+    name='code'
     left-icon="yanzhengma"
     placeholder="请输入验证码"
     :rules="formRules.code"
   >
    <template #button>
-    <van-button size="small" class="send" round>发送验证码</van-button>
+    <van-count-down :time="1000*6" format="ss s" v-if="isCountDownShow"/>
+    <van-button v-else size="small" class="send"
+    @finish="isCountDownShow = false"
+    @click.prevent="OnsendSms" round>发送验证码</van-button>
    </template>
   </van-field>
   <!-- 按钮 -->
@@ -43,7 +49,7 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user'
+import { login, sendSms } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -63,7 +69,8 @@ export default {
           { required: true, message: '请输入验证码' },
           { pattern: /\d{6}/, message: '验证码格式错误' }
         ]
-      }
+      },
+      isCountDownShow: false
     }
   },
   computed: {},
@@ -91,6 +98,31 @@ export default {
       if (err.errors[0]) {
         this.$toast({
           message: err.errors[0].message,
+          position: top
+        })
+      }
+    },
+    async OnsendSms () {
+      try {
+        // 校验手机号
+        // this.$refs['login-form']  可以获取login-form的实例
+        await this.$refs['login-form'].validate('mobile')
+        // 校验通过，发送验证码
+        const data = await sendSms(this.user.mobile)
+        // 显示倒计时
+        this.isCountDownShow = true
+        console.log(data)
+      } catch (error) {
+        let message = ''
+        if (error && error.response.status === 429) {
+          message = '发送的太频繁了'
+        } else if (error.name === 'mobile') {
+          message = error.message
+        } else {
+          message = '发送失败，请重新再试'
+        }
+        this.$toast({
+          message,
           position: top
         })
       }
