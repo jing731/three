@@ -36,7 +36,9 @@
     <van-count-down :time="1000*6" format="ss s" v-if="isCountDownShow"/>
     <van-button v-else size="small" class="send"
     @finish="isCountDownShow = false"
-    @click.prevent="OnsendSms" round>发送验证码</van-button>
+    @click.prevent="OnsendSms" round
+    :loading = 'isSendSmsloading'
+    >发送验证码</van-button>
    </template>
   </van-field>
   <!-- 按钮 -->
@@ -70,7 +72,8 @@ export default {
           { pattern: /\d{6}/, message: '验证码格式错误' }
         ]
       },
-      isCountDownShow: false
+      isCountDownShow: false,
+      isSendSmsloading: false
     }
   },
   computed: {},
@@ -108,6 +111,8 @@ export default {
         // this.$refs['login-form']  可以获取login-form的实例
         await this.$refs['login-form'].validate('mobile')
         // 校验通过，发送验证码
+        // 验证手机号，先loading
+        this.isSendSmsloading = true
         const data = await sendSms(this.user.mobile)
         // 显示倒计时
         this.isCountDownShow = true
@@ -126,6 +131,8 @@ export default {
           position: top
         })
       }
+      // 不管发送成功还是失败，都将loading关闭
+      this.isSendSmsloading = false
     }
   }
 }
