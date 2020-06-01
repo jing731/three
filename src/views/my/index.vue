@@ -1,6 +1,6 @@
 <template>
   <div class="my-container">
-       <van-cell-group class="user-container">
+    <van-cell-group v-if='user' class="user-container">
   <van-cell
   class="base-info"
   title="单元格"
@@ -48,6 +48,14 @@
       <div class="text">获赞</div>
     </div>
   </van-grid-item>
+  <div  class="not-login">
+    <div @click="$router.push('/login')"  class="shouji">
+       <img src="./shouji.png">
+    </div>
+    <div class="text">
+      登录/注册
+    </div>
+  </div>
  </van-grid>
     <van-grid class="btn-4" :column-num="2">
   <van-grid-item
@@ -62,10 +70,15 @@
  <!-- 页面导航 -->
  <van-cell title="消息通知" is-link to="" />
  <van-cell class="btn-4" title="小智同学" is-link to="" />
- <van-cell class="logout" title="退出登录"  />
+ <van-cell
+ @click="noLogin"
+ v-if='user'
+ class="logout"
+ title="退出登录"/>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'myIndex',
   components: {},
@@ -73,10 +86,27 @@ export default {
   data () {
     return {}
   },
+  computed: {
+    // 将容器中的数据映射到本地
+    ...mapState(['user'])
+  },
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    noLogin () {
+      this.$dialog.confirm({
+        title: '退出提示',
+        message: '确认退出吗？'
+      })
+        .then(() => { // 确认退出
+          this.$store.commit('setUser', null)
+        })
+        .catch(() => { // 取消
+        // on cancel
+        })
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -113,6 +143,23 @@ export default {
   }
   .btn-4{
     margin-bottom: 4px;
+  }
+  .not-login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    img{
+      width: 50px;
+      height: 50px;
+    }
+    .text{
+      font-size: 15px;
+    }
+    height: 180px;
+    width: 100%;
+    background: url("./banner.png") no-repeat;
+    color:#ffffff;
   }
 }
 

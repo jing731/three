@@ -59,8 +59,8 @@ export default {
   data () {
     return {
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810'
       },
       formRules: {
         mobile: [
@@ -93,6 +93,7 @@ export default {
         this.$toast.success('登录成功')
         // 登录成功后将数据存储到容器中
         this.$store.commit('setUser', res.data.data)
+        this.$router.back()// 有缺点
       } catch (err) {
         console.log(err)
         this.$toast.fail('登录失败，手机号或验证码错误')
